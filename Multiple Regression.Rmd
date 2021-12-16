@@ -1,0 +1,138 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+9.4.1 to 9.4.5:
+```{r}
+grr <- read.table("grr.csv", header = TRUE, sep = ",")
+dim(grr)
+head(grr)
+
+model1st <- lm(Y~X1, data=grr)
+summary(model1st)
+
+
+```
+Coefficient of Determination: 58.56%
+
+Testing the null Hypothesis:
+
+Ho: Absence of linear relationship between DTPA GFR and 1/Cystatin C.
+
+Ha: There is a significant linerar relationship exist between DTPA GFR and 1/Cystatin C.
+
+Test Static:5.931
+
+P-value:3.43e-06
+
+Conclusion: Reject Ho. In favor of Ha. There is sufficient evidence to conclude that a  significant linear relationship is present between DTPA GFR and 1/Cystatin C.
+
+P-value: 3.43e-06
+
+Conclusion: There is a  significant linear relationship exists between DTPA GFR and 1/Cystatin C. 
+
+
+Confidence Interval:
+```{r}
+confint(model1st, level=0.95)
+```
+
+
+```{r}
+library(lmtest, pos=4)
+
+bptest(Y ~ X1, varformula = ~ fitted.values(model1st), studentize=TRUE, data=grr)
+
+
+```
+•	Conduct the test for normality of the residuals (including writing up the hypotheses and conclusions):
+
+Ho: Random errors are normally distributed .
+
+Ha: Random errors are not normally distributed.
+
+P-Value: 0.3179
+
+Conclusion: In favor of Ho. There is insufficient evidence to conclude that the Random errors are not normally distributed
+
+
+
+
+Build a graph that displays a scatterplot of the data, the linear regression line, and the prediction limits :
+```{r}
+library(ggplot2)
+
+# Basic scatter plot with labels
+g <- ggplot(grr, aes(x=X1, y=Y)) + geom_point(size=3)
+g <- g + ggtitle("Scatterplot of DTPA GFR and 1/Cystatin C \n ") +
+  xlab("DTPA GFR") + ylab(" 1/Cystatin C")
+
+# Change the color, size and face of the title, x and y axis labels
+
+g <- g + theme(
+plot.title = element_text(color="red", size=14, 
+                          face="bold.italic", hjust = 0.5),
+axis.title.x = element_text(color="black", size=14, face="bold"),
+axis.title.y = element_text(color="black", size=14, face="bold")
+)
+g <- g + geom_smooth(method=lm, se=FALSE, color="darkred")
+
+g
+```
+
+
+2. Problem 10.3.6, page 501.
+
+```{r}
+hrr = read.table("hrr.csv", header=TRUE, sep=',')
+model2nd <- lm(y~x1+x2+x3+x4+x5+x6, data = hrr)
+summary(model2nd)
+
+```
+
+•	Test 2 of the Xi variables for significant 
+
+Ho:None of the explanatory variables is a linear predictor of mean arterial blood pressure.
+
+Ha: At least one explanatory variable is a significant predictor of mean arterial blood pressure.
+
+P-value = 1.111e-14
+
+Conclusion: Reject Ho in favor of Ha. There is sufficient evidence to conclude that at least one explanatory variable is a significant linear predictor of mean arterial blood pressure. 
+
+Coefficient of Determination :  0.9026
+
+Interpretation: 90.26% of the variability in the mean arterial blood pressure is accounted for in this model
+
+-Use the backward stepwise procedure to determine the “best” regression model:
+
+x4 is removed from the model because it has the largest p-value
+
+```{r}
+model3rd <- lm(y~x1+x2+x3+x5+x6, data = hrr)
+summary(model3rd)
+
+```
+x5 is removed from the model because it has the largest p-value.
+
+```{r}
+model4th <- lm(y~x1+x2+x3+x6, data = hrr)
+summary(model4th)
+
+```
+x6 is removed from the model because it has the largest p-value.
+
+```{r}
+model5th <- lm(y~x1+x2+x3, data = hrr)
+summary(model5th)
+
+```
+
+Conclusion:All the three variables have low p-valuesand build the best regression model. 
